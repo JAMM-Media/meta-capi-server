@@ -7,25 +7,28 @@ app.use(express.json());
 const PIXEL_ID = process.env.PIXEL_ID;
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 
+// Utility function to hash and normalize
 function hashData(data) {
-  return crypto.createHash('sha256').update(data).digest('hex');
+  return crypto.createHash('sha256').update(data.trim().toLowerCase()).digest('hex');
 }
 
-app.post('/purchase', async (req, res) => {
-  const { email, phone, value, currency } = req.body;
+app.post('/lead', async (req, res) => {
+  const { email } = req.body;
+  const hashedEmail = hashData(email);
 
   const event = {
-    event_name: 'Purchase',
+    event_name: 'Lead',
     event_time: Math.floor(Date.now() / 1000),
-    user_data: {
-      em: [hashData(email)],
-      ph: [hashData(phone)],
-    },
-    custom_data: {
-      currency,
-      value,
-    },
     action_source: 'website',
+    event_source_url: 'https://your-squarespace-site.com',
+    user_data: {
+      em: [hashedEmail],
+      client_ip_address: req.ip,
+      client_user_agent: req.get('User-Agent')
+    },
+    attribution_data: {
+      attribution_share: 0.3
+    }
   };
 
   try {
@@ -34,12 +37,13 @@ app.post('/purchase', async (req, res) => {
       {
         data: [event],
         access_token: ACCESS_TOKEN,
+        test_event_code: 'TEST31032' // Remove this for live events later
       }
     );
     res.status(200).json(response.data);
   } catch (error) {
-    console.error(error.response?.data || error.message);
-    res.status(500).send('Failed to send event');
+    console.error('Meta CAPI error:', error.response?.data || error.message);
+    res.status(500).json({ error: 'Failed to send lead event' });
   }
 });
 
