@@ -22,22 +22,19 @@ app.get("/", (req, res) => {
 const PIXEL_ID = process.env.PIXEL_ID;
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 
-// Utility function to hash and normalize
-function hashData(data) {
-  return crypto.createHash('sha256').update(data.trim().toLowerCase()).digest('hex');
-}
-
 app.post('/lead', async (req, res) => {
-  const { email } = req.body;
-  const hashedEmail = hashData(email);
+  const { hashedEmail, hashedPhone, fbp, fbc } = req.body;
 
   const event = {
     event_name: 'Lead',
     event_time: Math.floor(Date.now() / 1000),
     action_source: 'website',
-    event_source_url: 'https://your-squarespace-site.com',
+    event_source_url: 'https://www.jamm-media.com',
     user_data: {
       em: [hashedEmail],
+      ph: hashedPhone ? [hashedPhone] : undefined,
+      fbp: fbp || undefined,
+      fbc: fbc || undefined,
       client_ip_address: req.ip,
       client_user_agent: req.get('User-Agent')
     },
