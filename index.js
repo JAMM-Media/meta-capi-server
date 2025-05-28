@@ -14,6 +14,11 @@ app.use(cors({
 
 app.use(express.json());
 
+// ✅ Health check route
+app.get("/", (req, res) => {
+  res.send("✅ Meta CAPI server is running");
+});
+
 const PIXEL_ID = process.env.PIXEL_ID;
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 
