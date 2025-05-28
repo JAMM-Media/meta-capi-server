@@ -4,8 +4,7 @@ const crypto = require('crypto');
 const cors = require("cors");
 const app = express();
 
-app.use(express.json());
-
+// ✅ CORS should come before anything else
 app.use(cors({
   origin: ["https://www.jamm-media.com"],
   methods: ["GET", "POST", "OPTIONS"],
@@ -13,6 +12,7 @@ app.use(cors({
   credentials: true
 }));
 
+app.use(express.json());
 
 const PIXEL_ID = process.env.PIXEL_ID;
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
@@ -47,7 +47,7 @@ app.post('/lead', async (req, res) => {
       {
         data: [event],
         access_token: ACCESS_TOKEN,
-        test_event_code: 'TEST31032' // Remove this for live events later
+        test_event_code: 'TEST31032'
       }
     );
     res.status(200).json(response.data);
