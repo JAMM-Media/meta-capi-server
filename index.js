@@ -49,7 +49,6 @@ app.post('/lead', async (req, res) => {
       {
         data: [event],
         access_token: ACCESS_TOKEN,
-        test_event_code: 'TEST31032'
       }
     );
     res.status(200).json(response.data);
