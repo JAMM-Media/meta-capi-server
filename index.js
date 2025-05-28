@@ -7,9 +7,12 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: "https://www.jamm-media.com", // your website
-  methods: ["POST"]
+  origin: ["https://www.jamm-media.com"],
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type"],
+  credentials: true
 }));
+
 
 const PIXEL_ID = process.env.PIXEL_ID;
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
